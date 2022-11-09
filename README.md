@@ -66,7 +66,7 @@ Step-2: DOCKER
 Step-3: ECR
 ---------------
         Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
-        ----------------------------------------------------------------------------------------------------------------------------------------
+        
   1.Goto aws account and create a container registry for storing docker images
 
              select the start and click on private container
