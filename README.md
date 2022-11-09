@@ -1,6 +1,7 @@
-# Roll_Back_Image
+Roll_Back_Image
+----------------
    In our real time scenerio, we faced a lot of issues in server during deployments and we got downtime of server.To rectify that issue, we used roll-back image and to achieve zero downtime while deployment of server.
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
 PRE-REQUISITES:
 -----------------
  - Two EC2 servers with t2.micro
