@@ -80,7 +80,7 @@ Step-3: ECR
 Step-4: IAM
 -------------
            Identity and Access Management for security management purpose.
-    ------------------------------------------------------------------------------
+    
 IAM has four types of modules
 ------------------------------
       1. User
