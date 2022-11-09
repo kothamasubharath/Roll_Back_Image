@@ -1,15 +1,40 @@
 # Roll_Back_Image
-
-Step-1:
--------
- To create a environment for jenkins using ec2 instance
-
-   1.Create a ec2 ubuntu instance and install the jenkins packages     "jenkins server"
-
-            sudo apt-get update -y
-            sudo apt-get install maven -y
-            sudo apt-get install openjdk-11-jdk -y
-            wget "jenkins link"
+   In our real time scenerio, we faced a lot of issues in server during deployments and we got downtime of server.To rectify that issue, we used roll-back image and to achieve zero downtime while deployment of server.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+PRE-REQUISITES:
+ - Two EC2 servers with t2.micro
+ - ECR for storing images in aws.
+ - IAM role for aws service to service communication.
+ 
+ EC2: Elastic Compute Cloud in aws for creating and managing virtual servers according to our specifications to acquire our needs.
+ ECR: Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
+ IAM: Identity and Access Management for security management purpose. IAM has four types of modules 
+      1. User
+      2. User group
+      3. Roles
+      4. Policy
+     In our case, we used Roles for service to service communications inside a aws console.
+ -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ STEPS:
+  To create a environment for jenkins and docker using ec2 instance B
+   JENKINS:
+       Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve CI/CD 
+       pipeline.There are two types of pipeline:
+          1.Scripted Pipeline
+          2.Declarative Pipeline
+        In our case,we use Declarative Pipeline(DSL) for implementing CI/CD pipeline.
+ 
+          Create a ec2 ubuntu instance for Jenkins Installation:
+            
+          First we update the repository by using the below command:
+                     sudo apt-get update -y
+          Install maven for build the packages in pom.xml file and neglect the dependency error.
+                     sudo apt-get install maven -y
+          Before installing jenkins we must install java jdk-11 because jenkins written in java language.
+                     sudo apt-get install openjdk-11-jdk -y
+          Now we install jenkins using wget command with port 8080
+                     wget https://get.jenkins.io/war-stable/2.361.3/jenkins.war
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------  
 
   2.And install docker package for the purpose docker img want run
 
