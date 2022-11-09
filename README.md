@@ -14,10 +14,14 @@ PRE-REQUISITES:
  ---------------------------------------------------------------------------------------------------------------------------------------------------------------
  Step1: JENKINS
  ----------------
-    Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve CI/CD 
-    pipeline.There are two types of pipeline:
+    Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve 
+    CI/CD pipeline.
+    
+   There are two types of pipeline:
+   ----------------------------------
           1.Scripted Pipeline
           2.Declarative Pipeline
+         
     In our case,we use Declarative Pipeline(DSL) for implementing CI/CD pipeline.
 Create a ec2 ubuntu instance for Jenkins Installation:
 ------------------------------------------------------            
