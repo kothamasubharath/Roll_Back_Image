@@ -65,9 +65,9 @@ Step-2: DOCKER
           sudo chmod 777 /var/run/docker.sock   "for permission"
 Step-3: ECR
 ---------------
-
-  Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
-    1.Goto aws account and create a container registry for storing docker images
+        Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
+        ----------------------------------------------------------------------------------------------------------------------------------------
+  1.Goto aws account and create a container registry for storing docker images
 
              select the start and click on private container
              Give the name for that container registry
@@ -79,18 +79,22 @@ Step-3: ECR
 
 Step-4: IAM
 -------------
-Identity and Access Management for security management purpose. IAM has four types of modules 
+           Identity and Access Management for security management purpose.
+    ------------------------------------------------------------------------------
+IAM has four types of modules
+------------------------------
       1. User
       2. User group
       3. Roles
       4. Policy
+      
      In our case, we used Roles for service to service communications inside a aws console.
-
+-------------------------------------------------------------------------------------------------------
    1.Create role and apply to jenkins server in role give ecr full access
 
    2.Goto aws and search iam goto iam and here u find role click 
 
-      select ec2 --->next --->search registry click onit  -->next  -->give name for role -->save it
+      select ec2 --->next --->search registry click on it  -->next  -->give name for role -->save it
 
   3.This role is attached to jenkins server
 
