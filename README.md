@@ -2,27 +2,24 @@
    In our real time scenerio, we faced a lot of issues in server during deployments and we got downtime of server.To rectify that issue, we used roll-back image and to achieve zero downtime while deployment of server.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 PRE-REQUISITES:
+-----------------
  - Two EC2 servers with t2.micro
  - ECR for storing images in aws.
  - IAM role for aws service to service communication.
- 
- EC2: 
+-----------------------------------------------------------------------------------------------
+ EC2:
+ ----
     Elastic Compute Cloud in aws for creating and managing virtual servers according to our specifications to acquire our needs.
- 
- 
- -----------------------------------------------------------------------------------------------------------------------------------------------------------------
- STEPS:
- 
-  To create a environment for jenkins and docker using ec2 instance B
-   JENKINS:
-       Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve CI/CD 
-       pipeline.There are two types of pipeline:
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Step1: JENKINS
+ ----------------
+    Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve CI/CD 
+    pipeline.There are two types of pipeline:
           1.Scripted Pipeline
           2.Declarative Pipeline
-        In our case,we use Declarative Pipeline(DSL) for implementing CI/CD pipeline.
- 
-          Create a ec2 ubuntu instance for Jenkins Installation:
-            
+    In our case,we use Declarative Pipeline(DSL) for implementing CI/CD pipeline.
+Create a ec2 ubuntu instance for Jenkins Installation:
+------------------------------------------------------            
           First we update the repository by using the below command:
                      sudo apt-get update -y
           Install maven for build the packages in pom.xml file and neglect the dependency error.
@@ -47,8 +44,8 @@ PRE-REQUISITES:
           sudo usermod -aG docker ubuntu
           sudo chmod 777 /var/run/docker.sock   "permission for allow the docker image"
 
-Step-2:
-------
+Step-2: DOCKER
+----------------
 
  To create a environment for Docker using ec2 instance
 
@@ -65,9 +62,8 @@ Step-2:
           sudo service ssh restart
           sudo usermod -aG docker ubuntu
           sudo chmod 777 /var/run/docker.sock   "for permission"
-Step-3:
-------
-ECR:
+Step-3: ECR
+---------------
 Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
 
    1.Goto aws account and create a container registry for storing docker images
@@ -80,9 +76,8 @@ Elastic Container Registry for storing images and if you wish to push that image
 
        cpy this command "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
 
-Step-4:
-------
-IAM:
+Step-4: IAM
+-------------
 Identity and Access Management for security management purpose. IAM has four types of modules 
       1. User
       2. User group
