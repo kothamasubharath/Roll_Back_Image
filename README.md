@@ -207,5 +207,5 @@ Step-7: DECLARATIVE PIPELINE
                 }
             }
         }
-    }
-}
+     }
+  }
