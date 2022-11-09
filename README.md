@@ -128,13 +128,10 @@ Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
 
    2.And attach the IAM role to remote server also
 
-   sudo apt install awscli -y
- 
-            here paste the container registry
-
-     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
-
-       it show the succeed output.
+            sudo apt install awscli -y
+        here paste the container registry
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
+        it shows the succeed output.
 Step-7: ENVIRONMENT VARIABLES
 -------------------------------
       Environment variables helps programs know what directory to install files and to store temporary files and to find where the user profile settings is there.
