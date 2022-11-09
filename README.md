@@ -224,4 +224,7 @@ Step-9: DECLARATIVE PIPELINE
             }
         }
      }
-  
+  Step-10: CONCLUSION
+  ---------------------
+        Finally the docker container runs on the remote server if there is any issues in that running container it will automatically rollback into the older version
+        of the container without manual interruption.
