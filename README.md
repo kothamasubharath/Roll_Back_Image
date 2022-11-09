@@ -31,7 +31,7 @@ Create a ec2 ubuntu instance for Jenkins Installation:
                      wget https://get.jenkins.io/war-stable/2.361.3/jenkins.war
  ----------------------------------------------------------------------------------------------------------------------------------------------------------  
 
-  2.And install docker package for the purpose docker img want run
+  2.And install docker package for the purpose docker image want to run image jenkins server.
 
            curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
