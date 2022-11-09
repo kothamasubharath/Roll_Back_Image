@@ -100,21 +100,21 @@ Identity and Access Management for security management purpose. IAM has four typ
 
   4.finally the role is attached to jenkins server
 
-Step-5:
-------
+Step-5: AWSCLI - PUSH IMAGE TO ECR USING JENKINS
+--------------------------------------------------
 
   1.Goto jenkins server and install the awscli for registry connection
 
                 sudo apt install awscli -y
  
-            here paste the container registry
+       here paste the container registry
 
-      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
+                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
 
-       it show the successed
+       it show the succeed message.
 
-Step-6:
--------
+Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
+---------------------------------------------------------------
 
    1.Go to remote server same container registry connected with servers because we want push the img to container registry to remote server
 
@@ -126,10 +126,10 @@ Step-6:
 
      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
 
-       it show the successed
+       it show the succeed output.
 
-Step-7:
--------
+Step-7: DECLARATIVE PIPELINE
+------------------------------
 
    1.goto jenkins server and run the jenkins 
               
@@ -139,63 +139,63 @@ Step-7:
 
    3.create a new job with pipeline and give name for that one
 
-  pipeline{
-    agent any
-    environment{
-        AWS_ACCOUNT_ID="838342381657"
-        AWS_DEFAULT_REGION="us-east-1"
-        IMAGE_REPO_NAME="devops-jenkins"
-        IMAGE_TAG="latest"
-        REPOSITORY_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-    }
-    stages{
-        stage('git fetch'){
+       pipeline{
+       agent any
+       environment{
+            AWS_ACCOUNT_ID="838342381657"
+            AWS_DEFAULT_REGION="us-east-1"
+            IMAGE_REPO_NAME="devops-jenkins"
+            IMAGE_TAG="latest"
+            REPOSITORY_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+         }
+       stages{
+          stage('git fetch'){
             steps{
                 git branch: 'main', url: CredentailsI'd:1234 'https://github.com/kbharathkumar654/helloworld.git'
            
+               }
             }
-        }
-        stage('build image'){
+          stage('build image'){
             steps{
                 script{
                     sh 'docker system prune -a'
                     dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-                }
-            }  
-        }
-        stage('Logging to AWS ECR'){
+                  }
+              }  
+           }
+          stage('Logging to AWS ECR'){
             steps{
                 script{
-                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_REPO_NAME}"
-                }
-            }     
-        }
-        stage('pushing to ECR'){
+                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                                               1.amazonaws.com/${IMAGE_REPO_NAME}"
+                     }
+                  }     
+             }
+          stage ('pushing to ECR'){
             steps{
                 script{
                     sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}"
                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                  }
+               }
+            }
+          stage('pull the latest img to server'){
+            steps{
+                sh 'ssh ubuntu@172.31.18.18 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                           1.amazonaws.com/${IMAGE_REPO_NAME} && docker pull ${REPOSITORY_URL}:${IMAGE_TAG}"'
                 }
-            }
-        }
-        stage('pull the latest img to server'){
-            steps{
-                sh 'ssh ubuntu@172.31.18.18 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com/${IMAGE_REPO_NAME} && docker pull ${REPOSITORY_URL}:${IMAGE_TAG}"'
-            }
-        }
-        stage('docker stop container'){
-            steps{
-                script{
-                    env.running_image = sh(script: "ssh ubuntu@172.31.18.18 docker inspect --format='{{.Config.Image}}' rollback", returnStdout : true)
-                    sh 'ssh ubuntu@172.31.18.18 docker container stop rollback || true'
-                    sh 'ssh ubuntu@172.31.18.18 docker container rm rollback || true'
+              }
+           stage('docker stop container'){
+              steps{
+                  script{
+                      env.running_image = sh(script: "ssh ubuntu@172.31.18.18 docker inspect --format='{{.Config.Image}}' rollback", returnStdout : true)
+                      sh 'ssh ubuntu@172.31.18.18 docker container stop rollback || true'
+                      sh 'ssh ubuntu@172.31.18.18 docker container rm rollback || true'
+                   }
                 }
-            }
-        }
-        stage('Docker run'){
-            steps{
-                script{
-                    try
+             }
+           stage('Docker run'){
+              steps{
+                 script{
+                     try
                     {
                         sh "ssh ubuntu@172.31.18.18 docker run -d -p 8888:80 --name rollback --network=bridge ${REPOSITORY_URL}:${IMAGE_TAG}"
                     }
