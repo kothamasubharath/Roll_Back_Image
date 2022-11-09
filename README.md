@@ -6,14 +6,10 @@ PRE-REQUISITES:
  - ECR for storing images in aws.
  - IAM role for aws service to service communication.
  
- EC2: Elastic Compute Cloud in aws for creating and managing virtual servers according to our specifications to acquire our needs.
- ECR: Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
- IAM: Identity and Access Management for security management purpose. IAM has four types of modules 
-      1. User
-      2. User group
-      3. Roles
-      4. Policy
-     In our case, we used Roles for service to service communications inside a aws console.
+ EC2: 
+    Elastic Compute Cloud in aws for creating and managing virtual servers according to our specifications to acquire our needs.
+ 
+ 
  -----------------------------------------------------------------------------------------------------------------------------------------------------------------
  STEPS:
  
@@ -71,6 +67,8 @@ Step-2:
           sudo chmod 777 /var/run/docker.sock   "for permission"
 Step-3:
 ------
+ECR:
+Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
 
    1.Goto aws account and create a container registry for storing docker images
 
@@ -84,6 +82,13 @@ Step-3:
 
 Step-4:
 ------
+IAM:
+Identity and Access Management for security management purpose. IAM has four types of modules 
+      1. User
+      2. User group
+      3. Roles
+      4. Policy
+     In our case, we used Roles for service to service communications inside a aws console.
 
    1.Create role and apply to jenkins server in role give ecr full access
 
