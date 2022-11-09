@@ -16,6 +16,7 @@ PRE-REQUISITES:
      In our case, we used Roles for service to service communications inside a aws console.
  -----------------------------------------------------------------------------------------------------------------------------------------------------------------
  STEPS:
+ 
   To create a environment for jenkins and docker using ec2 instance B
    JENKINS:
        Jenkins is a open-source automation tool written in java and have mulitple number of plugins for integrating with many number of tools to achieve CI/CD 
