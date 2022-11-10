@@ -47,14 +47,21 @@ Create a ec2 ubuntu instance for Jenkins Installation:
           sudo vi /etc/ssh/sshd_config
           sudo service ssh restart
           sudo usermod -aG docker ubuntu
-          sudo chmod 777 /var/run/docker.sock   "permission for allow the docker image"
+          sudo chmod 777 /var/run/docker.sock   
+         stages{
+          stage('git fetch'){
+            steps{
+                git branch: 'main', url: CredentailsI'd:1234 'https://github.com/kbharathkumar654/helloworld.git'
+           
+               }
+            }
 
 Step-2: DOCKER
 ----------------
 
  To create a environment for Docker using ec2 instance
 
-   1.Create a ec2 ubuntu instance and install the docker packages     "Remote server"
+   1.Create a ec2 ubuntu instance and install the docker packages
 
                 curl -fsSL https://get.docker.com -o get-docker.sh
                 sh get-docker.sh
@@ -66,7 +73,15 @@ Step-2: DOCKER
           sudo vi /etc/ssh/sshd_config
           sudo service ssh restart
           sudo usermod -aG docker ubuntu
-          sudo chmod 777 /var/run/docker.sock   "for permission"
+          sudo chmod 777 /var/run/docker.sock   
+          stage('build image'){
+            steps{
+                script{
+                    sh 'docker system prune -a'
+                    dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                  }
+              }  
+           }
 Step-3: ECR
 ---------------
         Elastic Container Registry for storing images and if you wish to push that image to any other remote servers if needs.
@@ -107,6 +122,13 @@ IAM has four types of modules
            give the iam role and save it 
 
   4.finally the role is attached to jenkins server
+   stage('Logging to AWS ECR'){
+            steps{
+                script{
+                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                                               1.amazonaws.com/${IMAGE_REPO_NAME}"
+                     }
+                  }     
+             }
 
 Step-5: AWSCLI - PUSH IMAGE TO ECR USING JENKINS
 --------------------------------------------------
@@ -120,6 +142,14 @@ Step-5: AWSCLI - PUSH IMAGE TO ECR USING JENKINS
                 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
 
        it show the succeed message.
+       stage ('pushing to ECR'){
+            steps{
+                script{
+                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                  }
+               }
+            }
 
 Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
 ---------------------------------------------------------------
@@ -132,6 +162,11 @@ Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
         here paste the container registry
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
         it shows the succeed output.
+        stage('pull the latest img to server'){
+            steps{
+                sh 'ssh ubuntu@172.31.18.18 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-                       east-1.amazonaws.com/${IMAGE_REPO_NAME} && docker pull ${REPOSITORY_URL}:${IMAGE_TAG}"'
+                }
+              }
 Step-7: ENVIRONMENT VARIABLES
 -------------------------------
       Environment variables helps programs know what directory to install files and to store temporary files and to find where the user profile settings is there.
@@ -171,77 +206,8 @@ Step-9: DECLARATIVE PIPELINE
 
    2.in jenkins --->manage jenkins  -->manage plugins -->search for docker and docker pipeline plugin
 
-   3.create a new job with pipeline and give name for that one
-
-       pipeline{
-       agent any
-       environment{
-            AWS_ACCOUNT_ID="838342381657"
-            AWS_DEFAULT_REGION="us-east-1"
-            IMAGE_REPO_NAME="devops-jenkins"
-            IMAGE_TAG="latest"
-            REPOSITORY_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-         }
-       stages{
-          stage('git fetch'){
-            steps{
-                git branch: 'main', url: CredentailsI'd:1234 'https://github.com/kbharathkumar654/helloworld.git'
-           
-               }
-            }
-          stage('build image'){
-            steps{
-                script{
-                    sh 'docker system prune -a'
-                    dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-                  }
-              }  
-           }
-          stage('Logging to AWS ECR'){
-            steps{
-                script{
-                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                                               1.amazonaws.com/${IMAGE_REPO_NAME}"
-                     }
-                  }     
-             }
-          stage ('pushing to ECR'){
-            steps{
-                script{
-                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URL}:${IMAGE_TAG}"
-                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-                  }
-               }
-            }
-          stage('pull the latest img to server'){
-            steps{
-                sh 'ssh ubuntu@172.31.18.18 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                           1.amazonaws.com/${IMAGE_REPO_NAME} && docker pull ${REPOSITORY_URL}:${IMAGE_TAG}"'
-                }
-              }
-           stage('docker stop container'){
-              steps{
-                  script{
-                      env.running_image = sh(script: "ssh ubuntu@172.31.18.18 docker inspect --format='{{.Config.Image}}' rollback", returnStdout : true)
-                      sh 'ssh ubuntu@172.31.18.18 docker container stop rollback || true'
-                      sh 'ssh ubuntu@172.31.18.18 docker container rm rollback || true'
-                   }
-                }
-             }
-           stage('Docker run'){
-              steps{
-                 script{
-                     try
-                    {
-                        sh "ssh ubuntu@172.31.18.18 docker run -d -p 8888:80 --name rollback --network=bridge ${REPOSITORY_URL}:${IMAGE_TAG}"
-                    }
-                    catch (error)
-                    {
-                        echo error.getmessage()
-                        sh "ssh ubuntu@172.31.18.18 docker run -d -p 8888:80 --name rollback1 --network=bridge ${env.running_image}"
-                    }
-                }
-            }
-        }
-     }
+   3.create a new job with pipeline and deploy into the server.
+   
   Step-10: CONCLUSION
   ---------------------
         Finally the docker container runs on the remote server if there is any issues in that running container it will automatically rollback into the older version
