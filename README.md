@@ -136,10 +136,28 @@ Step-7: ENVIRONMENT VARIABLES
 -------------------------------
       Environment variables helps programs know what directory to install files and to store temporary files and to find where the user profile settings is there.
       It preceded with '$' symbol.
+       environment{
+            AWS_ACCOUNT_ID="838342381657"
+            AWS_DEFAULT_REGION="us-east-1"
+            IMAGE_REPO_NAME="devops-jenkins"
+            IMAGE_TAG="latest"
+            REPOSITORY_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+         }
 Step-8: TRY AND CATCH METHOD
 -------------------------------
       Try statement allows you to define a block of code to be tested for errors while it is being executed.
       Catch statement allows you to define a block of code to be executed,if an error occurs in the try block.
+       script{
+                     try
+                    {
+                        sh "ssh ubuntu@172.31.18.18 docker run -d -p 8888:80 --name rollback --network=bridge ${REPOSITORY_URL}:${IMAGE_TAG}"
+                    }
+                    catch (error)
+                    {
+                        echo error.getmessage()
+                        sh "ssh ubuntu@172.31.18.18 docker run -d -p 8888:80 --name rollback1 --network=bridge ${env.running_image}"
+                    }
+                }
 
 Step-9: DECLARATIVE PIPELINE
 ------------------------------
