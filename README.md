@@ -136,7 +136,7 @@ Step-7: ENVIRONMENT VARIABLES
 -------------------------------
       Environment variables helps programs know what directory to install files and to store temporary files and to find where the user profile settings is there.
       It preceded with '$' symbol.
-      ----------------------------------------
+   
        environment{
             AWS_ACCOUNT_ID="838342381657"
             AWS_DEFAULT_REGION="us-east-1"
@@ -148,7 +148,8 @@ Step-8: TRY AND CATCH METHOD
 -------------------------------
       Try statement allows you to define a block of code to be tested for errors while it is being executed.
       Catch statement allows you to define a block of code to be executed,if an error occurs in the try block.
-      ---------------------------------------------------------------------------------------------------------------
+      
+      
        script{
                      try
                     {
