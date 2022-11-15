@@ -47,7 +47,11 @@ Create a ec2 ubuntu instance for Jenkins Installation:
           sudo vi /etc/ssh/sshd_config
           sudo service ssh restart
           sudo usermod -aG docker ubuntu
-          sudo chmod 777 /var/run/docker.sock   
+          sudo chmod 777 /var/run/docker.sock
+          
+      PIPELINE SYNTAX:
+      ------------------
+      
          stages{
           stage('git fetch'){
             steps{
