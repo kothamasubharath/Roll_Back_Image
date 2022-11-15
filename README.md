@@ -49,10 +49,9 @@ Create a ec2 ubuntu instance for Jenkins Installation:
           sudo usermod -aG docker ubuntu
           sudo chmod 777 /var/run/docker.sock
           
-      PIPELINE SYNTAX:
-      ------------------
-      
-         stages{
+   PIPELINE SYNTAX:
+   ------------------
+          stages{
           stage('git fetch'){
             steps{
                 git branch: 'main', url: CredentailsI'd:1234 'https://github.com/kbharathkumar654/helloworld.git'
@@ -78,6 +77,9 @@ Step-2: DOCKER
           sudo service ssh restart
           sudo usermod -aG docker ubuntu
           sudo chmod 777 /var/run/docker.sock   
+          
+ PIPELINE SYNTAX:
+ -----------------
           stage('build image'){
             steps{
                 script{
@@ -126,6 +128,9 @@ IAM has four types of modules
            give the iam role and save it 
 
   4.finally the role is attached to jenkins server
+  
+ PIPELINE SYNTAX:
+ -----------------
    stage('Logging to AWS ECR'){
             steps{
                 script{
@@ -146,6 +151,9 @@ Step-5: AWSCLI - PUSH IMAGE TO ECR USING JENKINS
                 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
 
        it show the succeed message.
+       
+ PIPELINE SYNTAX:
+ ----------------
        stage ('pushing to ECR'){
             steps{
                 script{
@@ -166,6 +174,9 @@ Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
         here paste the container registry
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-1.amazonaws.com
         it shows the succeed output.
+        
+  PIPELINE SYNTAX:
+  -----------------
         stage('pull the latest img to server'){
             steps{
                 sh 'ssh ubuntu@172.31.18.18 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-                       east-1.amazonaws.com/${IMAGE_REPO_NAME} && docker pull ${REPOSITORY_URL}:${IMAGE_TAG}"'
@@ -174,8 +185,9 @@ Step-6: AWSCLI - PULL IMAGE FROM ECR TO REMOTE(DOCKER) SERVER
 Step-7: ENVIRONMENT VARIABLES
 -------------------------------
       Environment variables helps programs know what directory to install files and to store temporary files and to find where the user profile settings is there.
-      It preceded with '$' symbol.
-   
+      It preceded with '$' symbol
+  PIPELINE SYNTAX:
+ -----------------
        environment{
             AWS_ACCOUNT_ID="838342381657"
             AWS_DEFAULT_REGION="us-east-1"
@@ -187,7 +199,9 @@ Step-8: TRY AND CATCH METHOD
 -------------------------------
       Try statement allows you to define a block of code to be tested for errors while it is being executed.
       Catch statement allows you to define a block of code to be executed,if an error occurs in the try block.
-      
+ 
+ PIPELINE SYNTAX:
+ -----------------
       
        script{
                      try
