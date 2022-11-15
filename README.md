@@ -131,10 +131,10 @@ IAM has four types of modules
   
  PIPELINE SYNTAX:
  -----------------
-   stage('Logging to AWS ECR'){
+        stage('Logging to AWS ECR'){
             steps{
                 script{
-                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                                               1.amazonaws.com/${IMAGE_REPO_NAME}"
+                       sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 838342381657.dkr.ecr.us-east-                                         1.amazonaws.com/${IMAGE_REPO_NAME}"
                      }
                   }     
              }
